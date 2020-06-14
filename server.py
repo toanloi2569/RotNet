@@ -11,46 +11,56 @@ from flask import Flask, jsonify, request, flash
 from flask_cors import CORS  
 from keras.applications.imagenet_utils import preprocess_input
 from keras.models import load_model, model_from_json
+import json
+import base64
+import sys
 
 from utils import RotNetDataGenerator, crop_largest_rectangle, angle_error, rotate
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads/'
-# app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['UPLOAD_FOLDER'] = './uploads/image.jpg'
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 cors = CORS(app)
 
 
 
 model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
-# model_ver_2 = load_model()
+# # model_ver_2 = load_model()
 
-with open('models/architecture_ver3/model_ver_3_phase_1.def') as f:
-    model_ver_3_phase_1 = model_from_json(f.read())
+# with open('models/architecture_ver3/model_ver_3_phase_1.def') as f:
+#     model_ver_3_phase_1 = model_from_json(f.read())
 
-with open('models/architecture_ver3/model_ver_3_phase_2.def') as f:
-    model_ver_3_phase_2 = model_from_json(f.read())
+# with open('models/architecture_ver3/model_ver_3_phase_2.def') as f:
+#     model_ver_3_phase_2 = model_from_json(f.read())
 
-model_ver_3_phase_1.load_weights('models/weight_ver3_phase1_16_0.06.hdf5')
-model_ver_3_phase_2.load_weights('models/weight_ver3_phase2_18_2.09_3.29.hdf5')
+# # model_ver_3_phase_1.load_weights('models/weight_ver3_phase1_16_0.06.hdf5')
+# # model_ver_3_phase_2.load_weights('models/weight_ver3_phase2_18_2.09_3.29.hdf5')
 
 print('load model successfully')
 # model_ver_3_phase_1.summary()
 
 
-@app.route('/', methods=['POST'])
-def get_request():
-    file = request.files['file']
-    path_file = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    file.save(path_file)
+@app.route('/api', methods=['POST'])
+def get_request(): 
+    img = request.data.decode('utf-8')
+    img = json.loads(img)
+    
+    image_string = img["image"]
+    angle = img["angle"]
+    base = str(image_string).replace("data:image/jpeg;base64,","")
+    imgdata = base64.b64decode(base)
+    path_file = app.config['UPLOAD_FOLDER']
+    with open(path_file, 'wb') as f:
+        f.write(imgdata)
 
     buffered = BytesIO()
-    rotated_image, predicted_angle = predict(model, path_file)
+    rotated_image, predicted_angle = predict(model_ver_1, path_file)
     rotated_image = Image.fromarray(rotated_image, 'RGB')
     rotated_image.save(buffered, format="JPEG")
     return jsonify({
-        'angle': int(predicted_angle), 
-        'image' : base64.b64encode(buffered.getvalue()).decode("ascii")
+        'angle': 360 - int(predicted_angle), 
+        'image' : "data:image/jpeg;base64," + str(base64.b64encode(buffered.getvalue()).decode("ascii"))
         }), 200
 		
     
