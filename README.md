@@ -4,8 +4,13 @@ This repository has followed the blog [Correcting Image Orientation Using Convol
 
 ## Model
 
-Download the [model](https://drive.google.com/file/d/1-xWzmqLurACR5xhTutGmnfTdCSEtFVFe/view?usp=sharing) and move to `models/` folder
-
+Model version 1:
+- Download the [model](https://drive.google.com/file/d/1-xWzmqLurACR5xhTutGmnfTdCSEtFVFe/view?usp=sharing) and move to `models/` folder
+Model version 2:
+pass
+Model version 3:
+- Download the [model_phase_1](https://drive.google.com/file/d/10UlLFhwh_FyT6EGU73-3qAq2UJsCYwKR/view?usp=sharing) and move to `models/` folder
+- Download the [model_phase_2](https://drive.google.com/file/d/106x58v3T_ztFexJROOEbZIPuTnAtDCM3/view?usp=sharing) and move to `models/` folder
 ## Test
 
 Orientation images  
