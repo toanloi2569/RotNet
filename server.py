@@ -10,7 +10,7 @@ from io import BytesIO
 from flask import Flask, jsonify, request, flash 
 from flask_cors import CORS  
 from keras.applications.imagenet_utils import preprocess_input
-from keras.models import load_model
+from keras.models import load_model, model_from_json
 
 from utils import RotNetDataGenerator, crop_largest_rectangle, angle_error, rotate
 
@@ -20,7 +20,17 @@ app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 cors = CORS(app)
 
-model = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
+
+
+model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
+# model_ver_2 = load_model()
+
+model_ver_3_phase_1 = model_from_json('models/architecture_ver3/model_ver_3_phase_1.def')
+model_ver_3_phase_2 = model_from_json('models/architecture_ver3/model_ver_3_phase_2.def')
+
+model_ver_3_phase_1.load_weights('weight_ver3_phase1_16_0.06.hdf5')
+model_ver_3_phase_2.load_weights('weight_ver3_phase2_18_2.09_3.29.hdf5')
+
 
 @app.route('/', methods=['POST'])
 def get_request():
