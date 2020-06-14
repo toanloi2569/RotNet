@@ -20,7 +20,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads/'
 
 cors = CORS(app)
 
-model = load_model('models/rotnet_street_view_resnet50.hdf5', custom_objects={'angle_error': angle_error})
+model = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
 
 @app.route('/', methods=['POST'])
 def get_request():
