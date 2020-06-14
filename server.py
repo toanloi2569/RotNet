@@ -22,7 +22,7 @@ cors = CORS(app)
 
 
 
-# model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
+model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
 # model_ver_2 = load_model()
 
 with open('models/architecture_ver3/model_ver_3_phase_1.def') as f:
@@ -35,7 +35,7 @@ model_ver_3_phase_1.load_weights('models/weight_ver3_phase1_16_0.06.hdf5')
 model_ver_3_phase_2.load_weights('models/weight_ver3_phase2_18_2.09_3.29.hdf5')
 
 print('load model successfully')
-model_ver_3_phase_1.summary()
+# model_ver_3_phase_1.summary()
 
 
 @app.route('/', methods=['POST'])
