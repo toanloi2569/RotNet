@@ -90,6 +90,9 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Vscode 
+.vscode/
+
 # Project specific settings
 data/street_view
 logs/
