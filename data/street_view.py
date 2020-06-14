@@ -6,7 +6,7 @@ import zipfile
 
 
 def download(output_dir):
-    for i in range(10):
+    for i in range(1):
         filename = 'part{}.zip'.format(i + 1)
         url = r'http://www.cs.ucf.edu/~aroshan/index_files/Dataset_PitOrlManh/zipped images/' + filename
         print('Downloading', url)
