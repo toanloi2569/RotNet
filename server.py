@@ -12,13 +12,11 @@ from flask_cors import CORS
 from keras.applications.imagenet_utils import preprocess_input
 from keras.models import load_model, model_from_json
 import json
-import base64
-import sys
 
-from utils import RotNetDataGenerator, crop_largest_rectangle, angle_error, rotate
+from utils import RotNetDataGenerator, crop_largest_rectangle, angle_error, rotate, generate_rotated_image
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = './uploads/image.jpg'
+app.config['UPLOAD_FILE'] = './uploads/image.jpg'
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 cors = CORS(app)
@@ -45,14 +43,18 @@ print('load model successfully')
 def get_request(): 
     img = request.data.decode('utf-8')
     img = json.loads(img)
-    
     image_string = img["image"]
     angle = img["angle"]
+
     base = str(image_string).replace("data:image/jpeg;base64,","")
     imgdata = base64.b64decode(base)
-    path_file = app.config['UPLOAD_FOLDER']
-    with open(path_file, 'wb') as f:
-        f.write(imgdata)
+    imgdata = cv2.imdecode(np.frombuffer(imgdata, np.uint8), -1)
+    imgdata = cv2.cvtColor(imgdata, cv2.COLOR_BGR2RGB)
+    imgdata = crop_largest_rectangle(imgdata, angle, *imgdata.shape[:2])
+    imgdata = Image.fromarray(imgdata)
+
+    path_file = app.config['UPLOAD_FILE']
+    imgdata.save(path_file)
 
     buffered = BytesIO()
     rotated_image, predicted_angle = predict(model_ver_1, path_file)
@@ -87,6 +89,7 @@ def predict(model, input_path, batch_size=64, crop=True):
         size = (image.shape[0], image.shape[1])
         rotated_image = crop_largest_rectangle(rotated_image, -predicted_angle, *size)
     return rotated_image, predicted_angle
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
