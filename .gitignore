@@ -96,4 +96,7 @@ ENV/
 # Project specific settings
 data/street_view
 logs/
+data/hard/
+data/easy/
+data/noise/
 *.hdf5

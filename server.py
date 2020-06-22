@@ -23,7 +23,7 @@ cors = CORS(app)
 
 
 
-model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
+# model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'angle_error': angle_error})
 # # model_ver_2 = load_model()
 
 # with open('models/architecture_ver3/model_ver_3_phase_1.def') as f:
@@ -32,9 +32,12 @@ model_ver_1 = load_model('models/rotnet_COCO_resnet50.hdf5', custom_objects={'an
 # with open('models/architecture_ver3/model_ver_3_phase_2.def') as f:
 #     model_ver_3_phase_2 = model_from_json(f.read())
 
-# # model_ver_3_phase_1.load_weights('models/weight_ver3_phase1_16_0.06.hdf5')
-# # model_ver_3_phase_2.load_weights('models/weight_ver3_phase2_18_2.09_3.29.hdf5')
+# model_ver_3_phase_1.load_weights('models/weight_ver3_phase1_16_0.06.hdf5')
+# model_ver_3_phase_2.load_weights('models/weight_ver3_phase2_18_2.09_3.29.hdf5')
 
+with open('models/architecture_ver1/model.json', 'r') as f:
+    model_ver_1 = model_from_json(f.read())
+model_ver_1.load_weights('models/rotnet_COCO_resnet50_weight.hdf5')
 print('load model successfully')
 # model_ver_3_phase_1.summary()
 
@@ -44,7 +47,7 @@ def get_request():
     img = request.data.decode('utf-8')
     img = json.loads(img)
     image_string = img["image"]
-    angle = img["angle"]
+    angle = int(img["angle"])
 
     base = str(image_string).replace("data:image/jpeg;base64,","")
     imgdata = base64.b64decode(base)
